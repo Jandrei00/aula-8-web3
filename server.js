@@ -5,13 +5,13 @@ const { open } = require('sqlite');
 const app = express();
 app.use(express.json()); // faz o servidor entender JSON no body
 
-let db; // aqui fica a conexão com o banco
+let db; 
 
 // valores permitidos
 const PRIORIDADES = ['baixa', 'media', 'alta'];
 const STATUS = ['aberto', 'em_andamento', 'concluido'];
 
-// conecta no banco e cria a tabela (se ainda não existir)
+// conecta no banco e cria a tabela 
 async function iniciarBanco() {
   db = await open({
     filename: './database.sqlite',
@@ -32,9 +32,9 @@ async function iniciarBanco() {
   console.log('Banco conectado e tabela chamados pronta.');
 }
 
-// ---------- validações (usadas no POST e no PUT) ----------
+// ---------- validações (POST e PUT) ----------
 
-// true se não for texto ou se estiver vazio
+
 function vazio(valor) {
   return typeof valor !== 'string' || valor.trim() === '';
 }
@@ -86,7 +86,7 @@ app.post('/chamados', async (req, res) => {
   }
 });
 
-// GET /chamados -> lista todos
+// GET /chamados -> lista tudo que tem
 app.get('/chamados', async (req, res) => {
   try {
     const chamados = await db.all('SELECT * FROM chamados ORDER BY id');
@@ -133,7 +133,7 @@ app.put('/chamados/:id', async (req, res) => {
       return res.status(400).json({ erro: erroValidacao });
     }
 
-    // 3) atualiza (se não vier status, mantém o que já estava)
+    // 3) atualiza 
     await db.run(
       'UPDATE chamados SET titulo = ?, descricao = ?, prioridade = ?, status = ? WHERE id = ?',
       [
@@ -171,7 +171,7 @@ app.delete('/chamados/:id', async (req, res) => {
   }
 });
 
-// só liga o servidor depois que o banco estiver pronto (deixe sempre por último)
+// só liga o servidor depois que o banco estiver pronto
 iniciarBanco()
   .then(() => {
     app.listen(3000, () => {
